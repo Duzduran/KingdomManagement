@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Clergy Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" th:href="@{/home}">Home</a>
+</div>
+
+<div class="container mt-5">
+  <h1 class="mb-4">Clergy Details</h1>
+  <div class="card mb-4 p-4">
+    <p><strong>ID:</strong> <span th:text="${clergy.id}"></span></p>
+    <p><strong>Name:</strong> <span th:text="${clergy.name}"></span></p>
+    <p><strong>Chapel:</strong> <span th:text="${clergy.getChapel() + ' - ' + clergy.getDenomination() + ' : Domination'}"></span></p>
+    <p><strong>Ordination Year:</strong> <span th:text="${clergy.getOrdinationYear()}"></span></p>
+    <!-- Include the rest of your clergy details here -->
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

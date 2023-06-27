@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Create a new Castle</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body class="container py-5">
+<h1 class="text-center text-primary mb-4">Create a new Castle</h1>
+
+<form th:object="${castle}" th:action="@{/castle/new}" method="post">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input class="form-control" type="text" id="name" th:field="*{name}">
+  </div>
+
+  <div class="form-group">
+    <label for="numOfTowers">Number of Towers</label>
+    <input class="form-control" type="number" id="numOfTowers" th:field="*{numOfTowers}">
+  </div>
+
+  <div class="form-group">
+    <label for="innerArea">Inner Area</label>
+    <input class="form-control" type="number" id="innerArea" th:field="*{innerArea}">
+  </div>
+
+  <div class="form-group">
+    <label for="religion">Religion</label>
+    <select class="form-control" id="religion" th:field="*{religion}">
+      <option th:each="religion : ${religions}" th:value="${religion}" th:text="${religion}"></option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="kingdom">Kingdom</label>
+    <select class="form-control" id="kingdom" th:field="*{belongedKingdom}">
+      <option th:each="kingdom : ${kingdoms}" th:value="${kingdom}" th:text="${kingdom}"></option>
+    </select>
+  </div>
+
+  <div class="form-group form-check">
+    <input class="form-check-input" type="checkbox" id="nearbyCliff" th:field="*{nearbyCliff}">
+    <label class="form-check-label" for="nearbyCliff">Nearby Cliff</label>
+  </div>
+
+  <div class="form-group form-check">
+    <input class="form-check-input" type="checkbox" id="bendOfRiver" th:field="*{bendOfRiver}">
+    <label class="form-check-label" for="bendOfRiver">Bend of River</label>
+  </div>
+
+  <div class="form-group">
+    <label for="numOfInnerWalls">Number of Inner Walls</label>
+    <input class="form-control" type="number" id="numOfInnerWalls" th:field="*{numOfInnerWalls}">
+  </div>
+
+  <div class="form-group">
+    <label for="amountOfStoredFood">Amount of Stored Food</label>
+    <input class="form-control" type="number" id="amountOfStoredFood" th:field="*{amountOfStoredFood}">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Create castle</button>
+</form>
+</body>
+</html>

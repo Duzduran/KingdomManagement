@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Castle Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" th:href="@{/home}">Home</a>
+</nav>
+
+<div class="container mt-5">
+  <h1 class="mb-4">Castle Details</h1>
+  <div class="card mb-4 p-4">
+    <p><strong>ID:</strong> <span th:text="${castle.id}"></span></p>
+    <p><strong>Name:</strong> <span th:text="${castle.name}"></span></p>
+    <p><strong>Number of Towers:</strong> <span th:text="${castle.numOfTowers}"></span></p>
+    <p><strong>Inner Area:</strong> <span th:text="${castle.innerArea}"></span></p>
+  </div>
+
+  <div class="card mb-4 p-4">
+    <h2>Defender Type</h2>
+    <div class="form-group">
+      <select id="defenderType" class="form-control">
+        <option value="">Select a defender type</option>
+        <option value="Archer">Archer</option>
+        <option value="GateHolder">GateHolder</option>
+      </select>
+    </div>
+
+    <h3>Defenders:</h3>
+    <div class="form-group">
+      <select id="defenders" disabled class="form-control">
+        <option selected disabled>Choose a defender</option>
+      </select>
+    </div>
+
+    <button id="goToDefender" disabled class="btn btn-primary">Go to Defender</button>
+    <button id="addArcherButton" class="btn btn-secondary">Add Archer</button>
+    <button id="addGateHolderButton" class="btn btn-secondary">Add GateHolder</button>
+  </div>
+
+  <div class="card mb-4 p-4">
+    <h2>Balistarias</h2>
+    <div class="form-group">
+      <select id="balistarias" class="form-control">
+        <option value="" selected disabled>Choose a balistaria</option>
+        <option th:each="balistaria : ${castle.balistarias}" th:value="${balistaria.id}" th:text="${balistaria.name}"></option>
+      </select>
+    </div>
+    <button id="goToBalistaria" disabled class="btn btn-primary">Go to balistaria</button>
+    <button id="addBalistaria" class="btn btn-secondary">Add Balistaria</button>
+  </div>
+
+  <!-- Forms -->
+  <!-- Add Balistaria Form -->
+  <div id="addBalistariaForm" style="display: none;">
+    <form th:action="@{/addBalistaria}" th:object="${balistaria}" method="post" class="form-group">
+      <input type="text" th:field="*{name}" placeholder="Name" required class="form-control">
+      <input type="number" th:field="*{numberOfBolts}" placeholder="Number of Bolts" required class="form-control">
+      <input type="number" th:field="*{power}" placeholder="Power" required class="form-control">
+      <input type="hidden" th:field="*{belongedPlace.id}" th:value="${castle.id}">
+      <input type="submit" value="Add Balistaria" class="btn btn-primary mt-3">
+    </form>
+  </div>
+
+  <!-- Add Archer Form -->
+  <div id="addArcherForm" style="display: none;">
+    <form th:action="@{/addArcher}" th:object="${archer}" method="post" class="form-group">
+      <input type="text" th:field="*{name}" placeholder="Name" required class="form-control">
+      <input type="number" th:field="*{health}" placeholder="Health" required class="form-control">
+      <input type="number" th:field="*{damage}" placeholder="Damage" required class="form-control">
+      <input type="number" th:field="*{numOfArrows}" placeholder="Number of Arrows" required class="form-control">
+      <input type="hidden" th:field="*{defends.id}" th:value="${castle.id}">
+      <input type="submit" value="Add Archer" class="btn btn-primary mt-3">
+    </form>
+  </div>
+
+  <!-- Add GateHolder Form -->
+  <div id="addGateHolderForm" style="display: none;">
+    <form th:action="@{/addGateHolder}" th:object="${gateHolder}" method="post" class="form-group">
+      <input type="text" th:field="*{name}" placeholder="Name" required class="form-control">
+      <input type="number" th:field="*{health}" placeholder="Health" required class="form-control">
+      <input type="number" th:field="*{damage}" placeholder="Damage" required class="form-control">
+      <input type="number" th:field="*{stamina}" placeholder="Stamina" required class="form-control">
+      <input type="hidden" th:field="*{defends.id}" th:value="${castle.id}">
+      <input type="submit" value="Add GateHolder" class="btn btn-primary mt-3">
+    </form>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  var archers = /*[[${archersJson}]]*/ '[]';
+  var gateHolders = /*[[${gateHoldersJson}]]*/ '[]';
+  /*]]>*/
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $("#defenderType").change(function() {
+      var type = $(this).val();
+      var defenders;
+
+      if (type === 'Archer') {
+        defenders = JSON.parse(archers);
+      } else if (type === 'GateHolder') {
+        defenders = JSON.parse(gateHolders);
+      } else {
+        return;
+      }
+
+      var defendersDropdown = $("#defenders").prop('disabled', false).empty();
+      defendersDropdown.append($('<option selected disabled value=""></option>').html("Choose a defender"));
+
+      $.each(defenders, function(i, defender) {
+        defendersDropdown.append($('<option></option>').val(defender.id).html(defender.name));
+      });
+
+      $("#goToDefender").prop('disabled', true);
+    });
+
+    $("#defenders").change(function() {
+      var selectedDefender = $(this).val();
+      $("#goToDefender").prop('disabled', !selectedDefender || selectedDefender === "");
+    });
+
+    $("#goToDefender").click(function() {
+      var defenderId = $("#defenders").val();
+      var defenderType = $("#defenderType").val()
+      defenderType = defenderType.charAt(0).toLowerCase() + defenderType.slice(1);
+
+      if (defenderId) {
+        window.location.href = "/" + defenderType + "/" + defenderId;
+      }
+    });
+  });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#balistarias').change(function() {
+      // Enable the button when a balistaria is selected
+      $('#goToBalistaria').prop('disabled', false);
+    });
+
+    $('#goToBalistaria').click(function() {
+      // Get the selected balistaria id
+      var balistariaId = $('#balistarias').val();
+      if (balistariaId) {
+        // Redirect to the balistaria detail page
+        window.location.href = '/balistaria/' + balistariaId;
+      }
+    });
+  });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $("#addBalistaria").click(function() {
+      $("#addBalistariaForm").toggle();
+    });
+
+    $("#addArcherButton").click(function() {
+      $("#addArcherForm").toggle();
+    });
+    $("#addGateHolderButton").click(function() {
+      $("#addGateHolderForm").toggle();
+    });
+  });
+</script>
+</body>
+</html>

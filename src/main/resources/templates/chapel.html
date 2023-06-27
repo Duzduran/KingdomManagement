@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Chapel Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" th:href="@{/home}">Home</a>
+  <a class="btn btn-primary" th:href="@{/castle(id=${chapel.getBelongedCastle().id})}">
+    Return to Castle
+  </a>
+</div>
+
+<div class="container mt-5">
+  <h1>Chapel Details</h1>
+  <p><strong>ID:</strong> <span th:text="${chapel.id}"></span></p>
+  <p><strong>Name:</strong> <span th:text="${chapel.name}"></span></p>
+  <p><strong>Castle:</strong> <span th:text="${chapel.getBelongedCastle() + ' - ' + chapel.getBelongedCastle().religion + ' religio'}"></span></p>
+  <p><strong>Is Holy Day:</strong> <span th:text="${chapel.isHoldDay()}"></span></p>
+
+  <div class="card mb-4 p-4">
+    <h2>Clergies</h2>
+    <div class="form-group">
+      <select id="clergies" class="form-control">
+        <option value="" selected disabled>Choose a clergy</option>
+        <option th:each="clergy : ${chapel.clergies}" th:value="${clergy.id}" th:text="${clergy.name}"></option>
+      </select>
+    </div>
+    <button id="goToClergy" disabled class="btn btn-primary">Go to Clergy</button>
+    <button id="addClergy" class="btn btn-secondary">Add Clergy</button>
+  </div>
+
+  <div id="addClergyForm" style="display: none;">
+    <form th:action="@{/addClergy}" th:object="${clergy}" method="post" class="form-group">
+      <input type="text" th:field="*{name}" placeholder="Name" required class="form-control">
+      <label for="denomination">Denomination</label>
+      <select class="form-control" id="denomination" th:field="*{denomination}">
+        <option th:each="denomination : ${religions}" th:value="${denomination}" th:text="${denomination}"></option>
+      </select>
+      <input type="number" th:field="*{ordinationYear}" placeholder="Ordination Year" required class="form-control">
+      <input type="hidden" name="chapelId" th:value="${chapel.id}">
+      <input type="submit" value="Add Clergy" class="btn btn-primary mt-3">
+    </form>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  var clergies = /*[[${clergiesJson}]]*/ '[]';
+  /*]]>*/
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $("#addClergy").click(function() {
+      $("#addClergyForm").toggle();
+    });
+  });
+
+  $(document).ready(function() {
+    $('#clergies').change(function() {
+      $('#goToClergy').prop('disabled', false);
+    });
+
+    $('#goToClergy').click(function() {
+      var clergyId = $('#clergies').val();
+      if (clergyId) {
+        window.location.href = '/clergy/' + clergyId;
+      }
+    });
+  });
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

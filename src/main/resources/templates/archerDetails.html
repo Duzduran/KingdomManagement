@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Archer Details</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        #statusRow {
+            align-items: center;
+        }
+
+        .detail-label {
+            margin-right: 10px;
+        }
+
+        #changeButton {
+            margin-left: 10px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" th:href="@{/home}">Home</a>
+</nav>
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2>Archer Details</h2>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                <span class="detail-label">ID:</span>
+                <span class="detail-value" th:text="${archer.id}"></span>
+            </p>
+            <p class="card-text">
+                <span class="detail-label">Name:</span>
+                <span class="detail-value" th:text="${archer.name}"></span>
+            </p>
+            <p class="card-text">
+                <span class="detail-label">Belongs to Castle:</span>
+                <span class="detail-value"
+                      th:text="${archer.defends != null ? archer.defends.name : 'Not belongs to any'}"></span>
+            </p>
+            <select class="form-control" name="guardDuty" id="DutySelect">
+                <option value="" selected disabled>Choose a Duty</option>
+                <option th:each="guardDuty : ${guardDuties}" th:value="${guardDuty.id}"
+                        th:text="${guardDuty.name}"></option>
+            </select>
+            <button type="button" class="btn btn-primary mt-2" id="leaveCastleButton" th:if="${archer.defends != null}">
+                Leave castle
+            </button>
+            <button type="button" class="btn btn-primary mt-2" id="assignToCastleButton" onclick=toggleSelectList() th:if="${archer.defends == null}">Assign castle
+            </button>
+
+            <div id="castleDropdown" style="display: none;">
+                <label for="CastleSelect">Choose a Castle:</label>
+                <select id="castleSelect">
+                    <option value="" selected disabled>Choose a Castle</option>
+                    <option th:each="castle : ${castles}" th:value="${castle.id}" th:text="${castle.name}"></option>
+                </select>
+                <button type="button" id="assignButton" onclick=assignToCastle()>Assign</button>
+            </div>
+
+
+            <button type="button" class="btn btn-primary mt-2" id="showButton">Show duty details</button>
+            <input type="hidden" id="archerId" th:value="${archer.id}">
+
+            <!-- Add a div to display the details -->
+            <div id="dutyDetails"></div>
+
+            <div id="statusRow" class="row mt-2">
+                <p id="status" class="card-text col-auto mr-auto">
+                    <span class="detail-label">Duty Status:</span>
+                    <span class="detail-value" id="statusValue"></span>
+                </p>
+                <button type="button" class="btn btn-sm btn-primary" id="changeButton" style="display: none;">Change
+                    status
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    document.querySelector('#showButton').addEventListener('click', function () {
+        var selectedDuty = document.querySelector('#DutySelect').value;  // get the selected duty
+        // make a GET request to your server-side endpoint
+        fetch('/guardDuty/' + encodeURIComponent(selectedDuty))
+            .then(response => response.json())  // assume the response is in JSON
+            .then(data => {
+                // Display the data. Adjust this part to match the actual structure of 'data'.
+                var dutyDetailsDiv = document.querySelector('#dutyDetails');
+                dutyDetailsDiv.innerHTML = `<h2>${data.name}</h2>`;
+                // Update the displayed status
+                document.querySelector('#statusValue').textContent = data.status;
+                document.querySelector('#changeButton').style.display = 'block';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+
+    document.querySelector('#changeButton').addEventListener('click', function () {
+        var selectedDuty = document.querySelector('#DutySelect').value;
+        updateStatus(selectedDuty);
+    });
+
+    document.querySelector('#leaveCastleButton').addEventListener('click', function () {
+        var confirmation = confirm('Are you sure you want to leave the castle?');
+        if (confirmation) {
+            leaveCastle();
+        }
+    });
+    function leaveCastle() {
+        var archerId = document.querySelector('#archerId').value;
+        fetch('/archer/' + encodeURIComponent(archerId) + '/leaveCastle', {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Archer has left the castle');
+                    location.reload();
+                } else {
+                    alert('Something went wrong');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function updateStatus(id) {
+        fetch('/guardDuty/' + encodeURIComponent(id) + '/status', {
+            method: 'PUT'
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Update the displayed status
+                document.querySelector('#statusValue').textContent = data.status;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function toggleSelectList() {
+        var selectList = document.getElementById('castleDropdown');
+        if (selectList.style.display === 'none') {
+            selectList.style.display = 'block';
+        } else {
+            selectList.style.display = 'none';
+        }
+    }
+    function assignToCastle() {
+        const confirmation = confirm('Are you sure you want to assign archer to the castle?');
+        if (confirmation) {
+            var selectedCastle = document.querySelector('#castleSelect').value;  // get the selected castle
+            var archerId = document.querySelector('#archerId').value;
+
+            fetch('/archer/' + encodeURIComponent(archerId) + '/assignToCastle/' + encodeURIComponent(selectedCastle), {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Archer has successfully added to castle');
+                    location.reload();
+                } else {
+                    alert('Something went wrong');
+                }
+            })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+
+</script>
+</body>
+</html>

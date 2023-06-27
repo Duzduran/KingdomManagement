@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Kingdom Management</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" type="text/css" media="all"
+        href="../../css/gtvg.css" th:href="@{/css/gtvg.css}" />
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    .form-section {
+      background-color: #f9f9f9;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body class="container py-5">
+<h1 class="text-center text-primary mb-4">Welcome to our Kingdom!</h1>
+<p class="text-center">Current Time</p>
+<p class="text-center" th:text="${currentTime}"></p>
+
+<div class="form-section">
+  <form th:action="@{/home}" method="get">
+    <label for="religionSelect">Choose a religion:</label>
+    <select class="form-control" name="religion" id="religionSelect">
+      <option value="" selected disabled>Choose a religion</option>
+      <option th:each="religion : ${religions}" th:value="${religion}" th:text="${religion}"></option>
+    </select>
+    <button type="submit" class="btn btn-primary mt-2">Filter by religion</button>
+  </form>
+</div>
+
+<div class="form-section">
+  <form th:action="@{/castle}" method="get">
+    <label for="castleSelect">Select a Castle:</label>
+    <select class="form-control" name="id" id="castleSelect">
+      <option th:each="castle : ${castles}" th:value="${castle.id}" th:text="${castle.name}"></option>
+    </select>
+    <button type="submit" class="btn btn-primary mt-2">Go to castle</button>
+  </form>
+</div>
+
+<div class="form-section">
+  <form th:action="@{/castle/new}" method="get">
+    <button type="submit" class="btn btn-success mt-2">Add new castle</button>
+  </form>
+</div>
+</body>
+</html>
+

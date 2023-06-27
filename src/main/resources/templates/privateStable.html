@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Private Stable Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" th:href="@{/home}">Home</a>
+  <a class="btn btn-primary" th:href="@{/castle(id=${privateStable.getCastle().id})}">
+    Return to Castle
+  </a>
+
+</div>
+
+<div class="container mt-5">
+  <h1 class="mb-4">Private Stable Details</h1>
+  <div class="card mb-4 p-4">
+    <p><strong>ID:</strong> <span th:text="${privateStable.id}"></span></p>
+    <p><strong>Name:</strong> <span th:text="${privateStable.name}"></span></p>
+    <p><strong>Number of Horses:</strong> <span th:text="${privateStable.numOfHorses}"></span></p>
+    <p><strong>Has Hay:</strong> <span th:text="${privateStable.hasHay ? 'Yes' : 'No'}"></span></p>
+    <p><strong>Roles:</strong>
+      <span th:each="role : ${privateStable.roles}" th:text="${role} + ', '"></span>
+    </p>
+    <p><strong>Total Horse Power:</strong> <span th:text="${privateStable.calculateTotalHorsePower()}"></span></p>
+    <p><strong>Race Distance:</strong> <span th:text="${privateStable.calculateRaceDistance()}"></span></p>
+    <p><strong>Number of Races:</strong> <span th:text="${privateStable.calculateNumOfRaces()}"></span></p>
+    <p><strong>Parade Duration:</strong> <span th:text="${privateStable.calculateParadeDuration()}"></span></p>
+    <p><strong>Number of Participants:</strong> <span th:text="${privateStable.calculateNumOfParticipants()}"></span></p>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

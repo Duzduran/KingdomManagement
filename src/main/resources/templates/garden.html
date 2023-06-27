@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Garden View</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" th:href="@{/home}">Home</a>
+
+</nav>
+
+<div class="container mt-5">
+  <h1 class="mb-4">Garden Details</h1>
+  <div class="card mb-4 p-4">
+    <p><strong>ID:</strong> <span th:text="${garden.id}"></span></p>
+    <p><strong>Location:</strong> <span th:text="${garden.location}"></span></p>
+    <p><strong>Size:</strong> <span th:text="${garden.size}"></span></p>
+    <p><strong>Type:</strong> <span th:text="${garden.type}"></span></p>
+  </div>
+
+  <div id="royalActions" class="card mb-4 p-4" style="display: none;">
+    <h2>Royal Actions</h2>
+    <button id="prepareRoyalEvent" class="btn btn-success">Prepare Royal Event</button>
+    <button id="addStatue" class="btn btn-warning">Add Statue</button>
+  </div>
+
+  <div id="publicActions" class="card mb-4 p-4" style="display: none;">
+    <h2>Public Actions</h2>
+    <button id="openGardenToPublic" class="btn btn-primary">Open Garden to Public</button>
+    <button id="organizePublicEvent" class="btn btn-secondary">Organize Public Event</button>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    const gardenType = '${garden.type}';
+
+    if(gardenType === 'Royal') {
+      $('#royalActions').show();
+    } else if(gardenType === 'Public') {
+      $('#publicActions').show();
+    }
+
+    // Button click events logic...
+  });
+</script>
+
+</body>
+</html>
