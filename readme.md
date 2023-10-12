@@ -2,6 +2,9 @@
 
 The Kingdom Management System is a comprehensive application that allows castle managers to efficiently manage various aspects of their castles. This system provides a user-friendly interface for managing castles, including defense strategies, spiritual affairs, stables, and gardens.
 
+
+![ALT TEXT](src/main/resources/screenshots/mainScreen.png)
+
 ## User Requirements
 
 The system provides the following functionalities:
@@ -15,6 +18,7 @@ The system provides the following functionalities:
 7. Manage gardens, view garden details, and add new gardens (Royal Garden or Public Garden).
 
 ## Scenario: Assign Defender to Castle
+![ALT TEXT](src/main/resources/screenshots/AssignDefender.png)
 
 ### Use Case: View Defender
 
@@ -27,6 +31,8 @@ A castle manager wants to view the details of a specific defender assigned to a 
 **Assumptions and Pre-conditions:**
 1. The castle manager is logged into the system.
 2. A defender has already been assigned to the castle.
+
+![ALT TEXT](src/main/resources/screenshots/viewArcher.png)
 
 **Basic Flow of Events:**
 1. The castle manager selects the castle to manage.
